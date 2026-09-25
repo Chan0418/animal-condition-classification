@@ -1,8 +1,8 @@
-# animal-condition-classification
+# animal_condition_project README.md
 
 ## Project Overview
 
-This project uses machine learning to predict whether an animal condition is classified as dangerous based on the animal type and reported symptoms.
+This project uses machine learning to predict whether an animal health condition is classified as dangerous based on the animal type and reported symptoms.
 
 The project compares three classification models:
 
@@ -12,32 +12,35 @@ The project compares three classification models:
 
 ## Research Question
 
-Can animal type and reported symptoms predict whether an animal condition is dangerous?
+Can animal type and reported symptoms be used to predict whether a condition is classified as dangerous?
 
 ## Dataset
 
-The dataset comes from the Kaggle dataset:
+The project uses the [Animal Disease dataset from Kaggle](https://www.kaggle.com/datasets/gracehephzibahm/animal-disease).
 
-[`gracehephzibahm/animal-disease`](https://www.kaggle.com/datasets/gracehephzibahm/animal-disease)
+The dataset contains:
 
-The features include animal type and five symptom fields
-The target variable is `Dangerous`, containing `yes` or `no` labels.
+- Animal type
+- Five symptom fields
+- A binary `Dangerous` target variable with `yes` and `no` labels
+
+After cleaning and removing invalid or duplicate records, the notebook uses 839 records for analysis.
 
 ## Methods
 
-The notebook includes:
+The notebook follows these steps:
 
-1. Data loading and inspection
-2. Data normalization, preparation and cleaning
-3. Exploratory data analysis
-4. Encoding for categorical variables
-5. Machine-learning pipelines
-6. Stratified 5-fold cross-validation
-7. Model comparison using accuracy, precision, recall, F1-score, and ROC-AUC
-8. Test-set evaluation
-9. Confusion matrices
+1. Load and inspect the dataset
+2. Standardize animal and symptom text
+3. Apply selected corrections for known spelling and naming variations
+4. Explore the target distribution and common symptoms
+5. Split the data into training and test sets
+6. Apply one-hot encoding through leakage-safe pipelines
+7. Compare models using stratified five-fold cross-validation
+8. Evaluate the models on a held-out test set
+9. Display confusion matrices and classification reports
 
-The final model is selected using cross-validated F1-score because the dataset is highly imbalanced.
+The primary model-selection metric is F1-score because the dataset is highly imbalanced. Accuracy, precision, recall, and ROC-AUC are also reported.
 
 ## How to Run
 
@@ -49,18 +52,38 @@ pip install pandas numpy matplotlib seaborn scikit-learn kagglehub
 
 Then open and run:
 
-`animal_disease_project.ipynb`
+```text
+animal_disease_project.ipynb
+```
 
-The notebook can load the dataset through KaggleHub. Alternatively, place a file named `data.csv` in the same folder as the notebook.
+The notebook first looks for `data.csv` in the current folder. If it is not found, it attempts to load the dataset using KaggleHub. You can also place the downloaded `data.csv` file beside the notebook.
 
 ## Output Files
 
-When the notebook runs, it creates:
+Running the notebook creates:
 
-- `clean_data.csv`
-- `model_comparison.csv`
-- `model_comparison_test.csv`
+- `clean_data.csv` — the cleaned dataset
+- `model_comparison.csv` — cross-validation results
+- `model_comparison_test.csv` — held-out test-set results
+
+## Results and Interpretation
+
+The Linear SVM achieved the strongest cross-validated F1-score and was selected as the final model. It also classified all records in the held-out test set correctly.
+
+This result should be interpreted carefully because the dataset contains 819 dangerous cases and only 20 non-dangerous cases. The test set therefore contains only a small number of non-dangerous examples. A larger and more balanced dataset would be needed to determine how well the model generalizes to new cases.
 
 ## Limitations
 
-The dataset is strongly imbalanced, with many more dangerous cases than non-dangerous cases. The minority class is small, so evaluation results may be unstable. The dataset may also contain duplicate or very similar records. Therefore, high accuracy should not automatically be interpreted as strong real-world performance. The model identifies patterns in this dataset but does not establish medical or veterinary causation.
+- The target classes are strongly imbalanced.
+- The minority class contains relatively few observations.
+- Duplicate or highly similar records may lead to optimistic results.
+- The dataset may not represent real-world veterinary cases.
+- The model learns associations from the dataset and does not establish medical causation.
+
+## Conclusion
+
+This project demonstrates a complete classification workflow for animal-disease risk prediction, including data cleaning, exploratory analysis, model comparison, and test-set evaluation. The results provide a useful starting point, but future work should use a larger, more balanced, and independently collected dataset.
+
+## Disclaimer
+
+This project is for educational purposes only. It is not a veterinary diagnostic tool, and its predictions should not be used to make animal-health decisions.
